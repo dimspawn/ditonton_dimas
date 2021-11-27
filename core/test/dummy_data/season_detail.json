@@ -1,0 +1,20 @@
+{ 
+    "air_date": "2021-10-12",
+    "episodes": [
+        {
+            "air_date":"2021-10-12",
+            "episode_number": 1,
+            "id": 1,
+            "name": "name",
+            "overview": "overview",
+            "still_path": "still_path"
+        }
+    ],
+    "name": "name",
+    "overview": "overview",
+    "id": 1,
+    "original_language": "original_language",
+    "original_name": "original_name",
+    "poster_path": "poster_path",
+    "vote_average": 1.0
+}

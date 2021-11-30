@@ -1,0 +1,307 @@
+{
+  "project_info": {
+    "project_number": "759446455525",
+    "firebase_url": "https://dimspawn-myapplication.firebaseio.com",
+    "project_id": "dimspawn-myapplication",
+    "storage_bucket": "dimspawn-myapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759446455525:android:9bca22b3b2ed5ceedb000c",
+        "android_client_info": {
+          "package_name": "com.example.ditonton_dimas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEPVKpWNF4I204gX5sfcgWWExfxRhpdiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "759446455525-02vtlmchupkoa8onu8j4i9fdof2i357m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.menonton"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759446455525:android:f02891d2fbe53076db000c",
+        "android_client_info": {
+          "package_name": "com.example.menonton"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEPVKpWNF4I204gX5sfcgWWExfxRhpdiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "759446455525-02vtlmchupkoa8onu8j4i9fdof2i357m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.menonton"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759446455525:android:635cb1fd34d35659db000c",
+        "android_client_info": {
+          "package_name": "com.ima.ginatic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEPVKpWNF4I204gX5sfcgWWExfxRhpdiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "759446455525-02vtlmchupkoa8onu8j4i9fdof2i357m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.menonton"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759446455525:android:d65cbc091eaf7f19db000c",
+        "android_client_info": {
+          "package_name": "com.imaginatic.dicochat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEPVKpWNF4I204gX5sfcgWWExfxRhpdiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "759446455525-02vtlmchupkoa8onu8j4i9fdof2i357m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.menonton"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759446455525:android:88ba60423e213e6edb000c",
+        "android_client_info": {
+          "package_name": "com.imaginatic.myfirebasecloudmessaging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759446455525-5fom5141fnshsk4vpjv8flh7hud4480r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imaginatic.myfirebasecloudmessaging",
+            "certificate_hash": "6fada7351d74af319800404b5b3d3f4173046290"
+          }
+        },
+        {
+          "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEPVKpWNF4I204gX5sfcgWWExfxRhpdiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "759446455525-02vtlmchupkoa8onu8j4i9fdof2i357m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.menonton"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759446455525:android:26d85928f4537ee3db000c",
+        "android_client_info": {
+          "package_name": "com.imaginatic.tictactoe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEPVKpWNF4I204gX5sfcgWWExfxRhpdiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "759446455525-02vtlmchupkoa8onu8j4i9fdof2i357m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.menonton"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759446455525:android:c2ee075424bf6aa8db000c",
+        "android_client_info": {
+          "package_name": "com.publicapp.kotlinmessanger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEPVKpWNF4I204gX5sfcgWWExfxRhpdiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "759446455525-02vtlmchupkoa8onu8j4i9fdof2i357m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.menonton"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759446455525:android:f5536a2e2f14fe3cdb000c",
+        "android_client_info": {
+          "package_name": "com.testapp.dimspawn.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEPVKpWNF4I204gX5sfcgWWExfxRhpdiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759446455525-kk2g4ckgugj9d2tlaefooebvl9vqr7dr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "759446455525-02vtlmchupkoa8onu8j4i9fdof2i357m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.menonton"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

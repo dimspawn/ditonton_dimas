@@ -2,6 +2,8 @@
 // in core/test/helpers/test_helpers.dart.
 // Do not manually edit this file.
 
+// ignore_for_file: unnecessary_overrides
+
 import 'dart:async' as _i7;
 import 'dart:convert' as _i16;
 import 'dart:typed_data' as _i17;

@@ -1,10 +1,10 @@
 // ignore_for_file: constant_identifier_names, use_key_in_widget_constructors
 
-import 'package:core/utils/state_enum.dart';
 import 'package:core/widgets/episode_card_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:season/presentation/provider/season_detail_notifier.dart';
+import 'package:season/presentation/bloc/list/season_detail_bloc.dart';
 
 class SeasonDetailPage extends StatefulWidget {
   final int id;
@@ -18,9 +18,10 @@ class _SeasonDetailPage extends State<SeasonDetailPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<SeasonDetailNotifier>(context, listen: false)
-            .fetchSeasonDetail(widget.id, widget.seasonNumber));
+    Future.microtask(
+      () => context.read<SeasonDetailBloc>().add(InitiateSeasonDetail(
+          id: widget.id, seasonNumber: widget.seasonNumber)),
+    );
   }
 
   @override
@@ -31,23 +32,23 @@ class _SeasonDetailPage extends State<SeasonDetailPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<SeasonDetailNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.loading) {
+        child: BlocBuilder<SeasonDetailBloc, SeasonDetailState>(
+          builder: (context, state) {
+            if (state is SeasonDetailLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.loaded) {
+            } else if (state is SeasonDetailHasData) {
               return ListView.builder(
-                  itemCount: data.seasonDetail.episodes.length,
+                  itemCount: state.seasonDetail.episodes.length,
                   itemBuilder: (contex, index) {
                     return EpisodeCard(
-                        episode: data.seasonDetail.episodes[index]);
+                        episode: state.seasonDetail.episodes[index]);
                   });
             } else {
               return Center(
                 key: const Key('error_message'),
-                child: Text(data.message),
+                child: Text(state.message),
               );
             }
           },

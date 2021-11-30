@@ -1,5 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:core/domain/entities/serie.dart';
 import 'package:core/utils/failure.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -34,47 +33,36 @@ void main() {
   });
 
   group('Series Detail', () {
-    test('initial state should be empty', () {
-      expect(seriesDetailBloc.state, SeriesDetailEmpty());
-    });
-
     const mockId = 1;
 
-    final tSerieBloc = Serie(
-      name: 'name',
-      backdropPath: 'backdropPath',
-      firstAirDate: 'firstAirDate',
-      genreIds: const [1, 2, 3],
-      id: 1,
-      originalName: 'originalName',
-      overview: 'overview',
-      popularity: 1,
-      posterPath: 'posterPath',
-      voteAverage: 1,
-      voteCount: 1,
-    );
+    test('initial state should be empty', () {
+      expect(
+        seriesDetailBloc.state,
+        SeriesDetailEmpty(
+          testSerieDetail,
+          const [],
+          false,
+          '',
+        ),
+      );
+    });
 
-    final tSeriesBloc = <Serie>[tSerieBloc];
     blocTest<SeriesDetailBloc, SeriesDetailState>(
-      'Should emit [Loading, HasData] when data is gotten successfully',
+      'Should emit [Loading, HasDataRecFail] when data is gotten successfully but recommendations Error',
       build: () {
         when(mockGetSeriesDetail.execute(mockId))
-            .thenAnswer((_) async => const Right(testSerieDetail));
-        when(mockGetSeriesRecommendations.execute(mockId))
-            .thenAnswer((_) async => Right(tSeriesBloc));
+            .thenAnswer((_) async => Right(testSerieDetail));
+        when(mockGetSeriesRecommendations.execute(mockId)).thenAnswer(
+            (_) async => const Left(ServerFailure('Server Failure')));
         when(mockGetWatchListStatusSeries.execute(mockId))
             .thenAnswer((_) async => false);
         return seriesDetailBloc;
       },
       act: (bloc) => bloc.add(const InitiateDetailSeries(mockId)),
       expect: () => [
-        SeriesDetailLoading(),
-        SeriesDetailHasData(
-          result: testSerieDetail,
-          recommendations: tSeriesBloc,
-          isWatchlist: false,
-          message: '',
-        ),
+        SeriesDetailLoading(testSerieDetail, const [], false, ''),
+        SeriesDetailHasDataRecFail(
+            testSerieDetail, const [], false, 'Server Failure')
       ],
       verify: (bloc) {
         verify(mockGetSeriesDetail.execute(mockId));
@@ -82,7 +70,28 @@ void main() {
     );
 
     blocTest<SeriesDetailBloc, SeriesDetailState>(
-      'Should emit [Loading, Error] when get search is unsuccessful',
+      'Should emit [Loading, HasDataRecSucces] when data and recommendations is gotten successfully',
+      build: () {
+        when(mockGetSeriesDetail.execute(mockId))
+            .thenAnswer((_) async => Right(testSerieDetail));
+        when(mockGetSeriesRecommendations.execute(mockId))
+            .thenAnswer((_) async => Right(testSerieList));
+        when(mockGetWatchListStatusSeries.execute(mockId))
+            .thenAnswer((_) async => false);
+        return seriesDetailBloc;
+      },
+      act: (bloc) => bloc.add(const InitiateDetailSeries(mockId)),
+      expect: () => [
+        SeriesDetailLoading(testSerieDetail, const [], false, ''),
+        SeriesDetailHasDataRecSuccess(testSerieDetail, testSerieList, false, '')
+      ],
+      verify: (bloc) {
+        verify(mockGetSeriesDetail.execute(mockId));
+      },
+    );
+
+    blocTest<SeriesDetailBloc, SeriesDetailState>(
+      'Should emit [Loading, Error] when get series detail is unsuccessful',
       build: () {
         when(mockGetSeriesDetail.execute(mockId)).thenAnswer(
             (_) async => const Left(ServerFailure('Server Failure')));
@@ -94,11 +103,87 @@ void main() {
       },
       act: (bloc) => bloc.add(const InitiateDetailSeries(mockId)),
       expect: () => [
-        SeriesDetailLoading(),
-        const SeriesDetailError('Server Failure'),
+        SeriesDetailLoading(testSerieDetail, const [], false, ''),
+        SeriesDetailError(testSerieDetail, const [], false, 'Server Failure')
       ],
       verify: (bloc) {
         verify(mockGetSeriesDetail.execute(mockId));
+      },
+    );
+
+    blocTest<SeriesDetailBloc, SeriesDetailState>(
+      'Should emit [AddWatchlist] when get watchlist added successfully',
+      build: () {
+        when(mockGetWatchListStatusSeries.execute(mockId))
+            .thenAnswer((_) async => true);
+        when(mockSaveWatchlistSeries.execute(testSerieDetail))
+            .thenAnswer((_) async => const Right('Added to Series Watchlist'));
+        return seriesDetailBloc;
+      },
+      act: (bloc) => bloc.add(AddWatchlistSeriesEvent(testSerieDetail)),
+      expect: () => [
+        SeriesDetailAddWatchlist(
+            testSerieDetail, const [], true, 'Added to Series Watchlist'),
+      ],
+      verify: (bloc) {
+        verify(mockSaveWatchlistSeries.execute(testSerieDetail));
+      },
+    );
+
+    blocTest<SeriesDetailBloc, SeriesDetailState>(
+      'Should emit [ErrorAddWatchlist] when get watchlist add unsuccessful',
+      build: () {
+        when(mockGetWatchListStatusSeries.execute(mockId))
+            .thenAnswer((_) async => false);
+        when(mockSaveWatchlistSeries.execute(testSerieDetail)).thenAnswer(
+            (_) async => const Left(ServerFailure('Server Failure')));
+        return seriesDetailBloc;
+      },
+      act: (bloc) => bloc.add(AddWatchlistSeriesEvent(testSerieDetail)),
+      expect: () => [
+        SeriesDetailWatchlistError(
+            testSerieDetail, const [], false, 'Server Failure'),
+      ],
+      verify: (bloc) {
+        verify(mockSaveWatchlistSeries.execute(testSerieDetail));
+      },
+    );
+
+    blocTest<SeriesDetailBloc, SeriesDetailState>(
+      'Should emit [RemoveWatchlist] when get watchlist removed successfully',
+      build: () {
+        when(mockGetWatchListStatusSeries.execute(mockId))
+            .thenAnswer((_) async => false);
+        when(mockRemoveWatchlistSeries.execute(testSerieDetail)).thenAnswer(
+            (_) async => const Right('Removed From Series Watchlist'));
+        return seriesDetailBloc;
+      },
+      act: (bloc) => bloc.add(RemoveWatchlistSeriesEvent(testSerieDetail)),
+      expect: () => [
+        SeriesDetailRemoveWatchlist(
+            testSerieDetail, const [], false, 'Removed From Series Watchlist'),
+      ],
+      verify: (bloc) {
+        verify(mockRemoveWatchlistSeries.execute(testSerieDetail));
+      },
+    );
+
+    blocTest<SeriesDetailBloc, SeriesDetailState>(
+      'Should emit [ErrorRemoveWatchlist] when get watchlist remove unsuccessful',
+      build: () {
+        when(mockGetWatchListStatusSeries.execute(mockId))
+            .thenAnswer((_) async => true);
+        when(mockRemoveWatchlistSeries.execute(testSerieDetail)).thenAnswer(
+            (_) async => const Left(ServerFailure('Server Failure')));
+        return seriesDetailBloc;
+      },
+      act: (bloc) => bloc.add(RemoveWatchlistSeriesEvent(testSerieDetail)),
+      expect: () => [
+        SeriesDetailWatchlistError(
+            testSerieDetail, const [], true, 'Server Failure'),
+      ],
+      verify: (bloc) {
+        verify(mockRemoveWatchlistSeries.execute(testSerieDetail));
       },
     );
   });

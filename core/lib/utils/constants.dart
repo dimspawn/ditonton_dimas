@@ -1,3 +1,3 @@
 const String baseImageUrl = 'https://image.tmdb.org/t/p/w500';
-const String successMessage = 'Added to Series Watchlist';
-const String removeMessage = 'Removed from Series Watchlist';
+const String successAddedSeriesMessage = 'Added to Series Watchlist';
+const String successRemoveSeriesMessage = 'Removed from Series Watchlist';

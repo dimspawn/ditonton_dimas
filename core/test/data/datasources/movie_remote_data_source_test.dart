@@ -181,6 +181,36 @@ void main() {
     });
   });
 
+  group('get top rated movies', () {
+    final tMovieList = MovieResponse.fromJson(
+            json.decode(readJson('dummy_data/top_rated.json')))
+        .movieList;
+
+    test('should return top rated movies when the response code is 200',
+        () async {
+      // arrange
+      when(mockClient.get(Uri.parse('$BASE_URL/movie/top_rated?$API_KEY')))
+          .thenAnswer((_) async =>
+              http.Response(readJson('dummy_data/top_rated.json'), 200));
+      // act
+      final result = await dataSource.getTopRatedMovies();
+      // assert
+      expect(result, equals(tMovieList));
+    });
+
+    test('should throw ServerException when response code is other than 200',
+        () async {
+      // arrange
+      when(mockClient.get(Uri.parse('$BASE_URL/movie/top_rated?$API_KEY')))
+          .thenAnswer((_) async =>
+              http.Response(readJson('dummy_data/top_rated.json'), 404));
+      // act
+      final call = dataSource.getTopRatedMovies();
+      // assert
+      expect(() => call, throwsA(isA<ServerException>()));
+    });
+  });
+
   group('get On The Air Series', () {
     final tSerieList = SeriesResponse.fromJson(
             json.decode(readJson('dummy_data/on_the_air.json')))
@@ -360,6 +390,36 @@ void main() {
           .thenAnswer((_) async => http.Response('Not Found', 404));
       // act
       final call = dataSource.getSeasonDetail(tId, seasonNumber);
+      // assert
+      expect(() => call, throwsA(isA<ServerException>()));
+    });
+  });
+
+  group('get top rated series', () {
+    final tseriesList = SeriesResponse.fromJson(
+            json.decode(readJson('dummy_data/top_rated_series.json')))
+        .seriesList;
+
+    test('should return top rated series when the response code is 200',
+        () async {
+      // arrange
+      when(mockClient.get(Uri.parse('$BASE_URL/tv/top_rated?$API_KEY')))
+          .thenAnswer((_) async =>
+              http.Response(readJson('dummy_data/top_rated_series.json'), 200));
+      // act
+      final result = await dataSource.getTopRatedSeries();
+      // assert
+      expect(result, equals(tseriesList));
+    });
+
+    test('should throw ServerException when response code is other than 200',
+        () async {
+      // arrange
+      when(mockClient.get(Uri.parse('$BASE_URL/tv/top_rated?$API_KEY')))
+          .thenAnswer((_) async =>
+              http.Response(readJson('dummy_data/top_rated_series.json'), 404));
+      // act
+      final call = dataSource.getTopRatedSeries();
       // assert
       expect(() => call, throwsA(isA<ServerException>()));
     });

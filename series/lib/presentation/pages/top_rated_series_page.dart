@@ -1,11 +1,10 @@
 // ignore_for_file: constant_identifier_names, use_key_in_widget_constructors
 
-import 'package:core/utils/state_enum.dart';
 import 'package:core/widgets/serie_card_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
-import '../provider/top_rated_series_notifier.dart';
+import 'package:series/presentation/bloc/top_rated/top_rated_series_bloc.dart';
 
 class TopRatedSeriesPage extends StatefulWidget {
   @override
@@ -16,9 +15,14 @@ class _TopRatedSeriesPage extends State<TopRatedSeriesPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<TopRatedSeriesNotifier>(context, listen: false)
-            .fetchTopRatedSeries());
+    Future.microtask(
+        // () => Provider.of<TopRatedSeriesNotifier>(context, listen: false)
+        //     .fetchTopRatedSeries(),
+        () {
+      context
+          .read<TopRatedSeriesBloc>()
+          .add(const InitiateTopRatedSeriesEvent());
+    });
   }
 
   @override
@@ -29,24 +33,24 @@ class _TopRatedSeriesPage extends State<TopRatedSeriesPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<TopRatedSeriesNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.loading) {
+        child: BlocBuilder<TopRatedSeriesBloc, TopRatedSeriesState>(
+          builder: (context, state) {
+            if (state is TopRatedSeriesLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.loaded) {
+            } else if (state is TopRatedSeriesHasData) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final serie = data.series[index];
+                  final serie = state.topRatedSeries[index];
                   return SeriesCard(serie);
                 },
-                itemCount: data.series.length,
+                itemCount: state.topRatedSeries.length,
               );
             } else {
               return Center(
                 key: const Key('error_message'),
-                child: Text(data.message),
+                child: Text(state.message),
               );
             }
           },

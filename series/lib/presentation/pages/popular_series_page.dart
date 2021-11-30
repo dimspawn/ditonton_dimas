@@ -1,9 +1,9 @@
 // ignore_for_file: constant_identifier_names, use_key_in_widget_constructors
 
-import 'package:core/utils/state_enum.dart';
 import 'package:core/widgets/serie_card_list.dart';
 import 'package:flutter/material.dart';
-import 'package:series/presentation/provider/popular_series_notifier.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:series/presentation/bloc/popular/popular_series_bloc.dart';
 import 'package:provider/provider.dart';
 
 class PopularSeriesPage extends StatefulWidget {
@@ -15,9 +15,12 @@ class _PopularSeriesPage extends State<PopularSeriesPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<PopularSeriesNotifier>(context, listen: false)
-            .fetchPopularSeries());
+    Future.microtask(
+        // () => Provider.of<PopularSeriesNotifier>(context, listen: false)
+        //     .fetchPopularSeries(),
+        () {
+      context.read<PopularSeriesBloc>().add(const InitiatePopularSeriesEvent());
+    });
   }
 
   @override
@@ -28,24 +31,24 @@ class _PopularSeriesPage extends State<PopularSeriesPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<PopularSeriesNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.loading) {
+        child: BlocBuilder<PopularSeriesBloc, PopularSeriesState>(
+          builder: (context, state) {
+            if (state is PopularSeriesLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.loaded) {
+            } else if (state is PopularSeriesHasData) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final serie = data.series[index];
+                  final serie = state.popularSeries[index];
                   return SeriesCard(serie);
                 },
-                itemCount: data.series.length,
+                itemCount: state.popularSeries.length,
               );
             } else {
               return Center(
                 key: const Key('error_message'),
-                child: Text(data.message),
+                child: Text(state.message),
               );
             }
           },

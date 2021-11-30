@@ -1,12 +1,11 @@
 // ignore_for_file: constant_identifier_names, use_key_in_widget_constructors
 
-import 'package:core/utils/state_enum.dart';
 import 'package:core/utils/utils.dart';
 import 'package:core/widgets/serie_card_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
-import '../provider/watchlist_serie_notifier.dart';
+import 'package:series/presentation/bloc/watchlist/watchlist_series_bloc.dart';
 
 class WatchlistSeriesPage extends StatefulWidget {
   @override
@@ -17,9 +16,14 @@ class _WatchlistSeriesPage extends State<WatchlistSeriesPage> with RouteAware {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<WatchlistSeriesNotifier>(context, listen: false)
-            .fetchWatchlistSeries());
+    Future.microtask(
+        // () => Provider.of<WatchlistSeriesNotifier>(context, listen: false)
+        //     .fetchWatchlistSeries(),
+        () {
+      context
+          .read<WatchlistSeriesBloc>()
+          .add(const InitiateWatchlistSeriesEvent());
+    });
   }
 
   @override
@@ -30,8 +34,11 @@ class _WatchlistSeriesPage extends State<WatchlistSeriesPage> with RouteAware {
 
   @override
   void didPopNext() {
-    Provider.of<WatchlistSeriesNotifier>(context, listen: false)
-        .fetchWatchlistSeries();
+    // Provider.of<WatchlistSeriesNotifier>(context, listen: false)
+    //     .fetchWatchlistSeries();
+    context
+        .read<WatchlistSeriesBloc>()
+        .add(const InitiateWatchlistSeriesEvent());
   }
 
   @override
@@ -42,24 +49,24 @@ class _WatchlistSeriesPage extends State<WatchlistSeriesPage> with RouteAware {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<WatchlistSeriesNotifier>(
-          builder: (context, data, child) {
-            if (data.watchlistSeriesState == RequestState.loading) {
+        child: BlocBuilder<WatchlistSeriesBloc, WatchlistSeriesState>(
+          builder: (context, state) {
+            if (state is WatchlistSeriesLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.watchlistSeriesState == RequestState.loaded) {
+            } else if (state is WatchlistSeriesHasData) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final serie = data.watchlistSeries[index];
+                  final serie = state.watchlistSeries[index];
                   return SeriesCard(serie);
                 },
-                itemCount: data.watchlistSeries.length,
+                itemCount: state.watchlistSeries.length,
               );
             } else {
               return Center(
                 key: const Key('error_message'),
-                child: Text(data.message),
+                child: Text(state.message),
               );
             }
           },

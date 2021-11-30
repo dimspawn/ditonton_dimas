@@ -1,26 +1,72 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 part of 'search_series_bloc.dart';
 
 abstract class SearchSeriesState extends Equatable {
-  const SearchSeriesState();
-  @override
-  List<Object?> get props => [];
+  final List<Serie> result;
+  final String message;
+  const SearchSeriesState({
+    required this.result,
+    required this.message,
+  });
 }
 
-class SearchSeriesEmpty extends SearchSeriesState {}
+class SearchSeriesEmpty extends SearchSeriesState {
+  SearchSeriesEmpty(
+    List<Serie> result,
+    String message,
+  ) : super(
+          result: result,
+          message: message,
+        );
+  @override
+  List<Object?> get props => [
+        result,
+        message,
+      ];
+}
 
-class SearchSeriesLoading extends SearchSeriesState {}
+class SearchSeriesLoading extends SearchSeriesState {
+  SearchSeriesLoading(
+    List<Serie> result,
+    String message,
+  ) : super(
+          result: result,
+          message: message,
+        );
+  @override
+  List<Object?> get props => [
+        result,
+        message,
+      ];
+}
 
 class SearchSeriesError extends SearchSeriesState {
-  final String message;
-  const SearchSeriesError(this.message);
-
+  SearchSeriesError(
+    List<Serie> result,
+    String message,
+  ) : super(
+          result: result,
+          message: message,
+        );
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [
+        result,
+        message,
+      ];
 }
 
 class SearchSeriesHasData extends SearchSeriesState {
-  final List<Serie> result;
-  const SearchSeriesHasData(this.result);
+  SearchSeriesHasData(
+    List<Serie> result,
+    String message,
+  ) : super(
+          result: result,
+          message: message,
+        );
   @override
-  List<Object?> get props => [result];
+  List<Object?> get props => [
+        result,
+        message,
+      ];
 }

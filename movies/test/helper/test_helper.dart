@@ -10,14 +10,9 @@ import 'package:movies/domain/usecases/get_watchlist_status_movies.dart';
 import 'package:movies/domain/usecases/remove_movies_watchlist.dart';
 import 'package:movies/domain/usecases/save_movies_watchlist.dart';
 import 'package:movies/domain/usecases/search_movies.dart';
-import 'package:movies/presentation/provider/movie_detail_notifier.dart';
-import 'package:movies/presentation/provider/popular_movies_notifier.dart';
-import 'package:movies/presentation/provider/top_rated_movies_notifier.dart';
 
 @GenerateMocks([
   MovieRepository,
-  MovieDetailNotifier,
-  PopularMoviesNotifier,
   SearchMovies,
   GetNowPlayingMovies,
   GetPopularMovies,
@@ -28,6 +23,5 @@ import 'package:movies/presentation/provider/top_rated_movies_notifier.dart';
   GetWatchlistMovies,
   SaveMoviesWatchlist,
   RemoveMoviesWatchlist,
-  TopRatedMoviesNotifier,
 ])
 void main() {}

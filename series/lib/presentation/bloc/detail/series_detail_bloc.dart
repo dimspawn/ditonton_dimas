@@ -1,3 +1,5 @@
+import 'package:core/domain/entities/genre.dart';
+import 'package:core/domain/entities/season.dart';
 import 'package:core/domain/entities/serie.dart';
 import 'package:core/domain/entities/serie_detail.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,17 +20,10 @@ class SeriesDetailBloc extends Bloc<SeriesDetailEvent, SeriesDetailState> {
   final SaveWatchlistSeries saveWatchlistSeries;
   final RemoveWatchlistSeries removeWatchlistSeries;
 
-  late SeriesDetail _serie;
-  SeriesDetail get serie => _serie;
-
-  List<Serie> _seriesRecommendations = [];
-  List<Serie> get seriesRecommendations => _seriesRecommendations;
-
+  late SeriesDetail _seriesDetail;
+  List<Serie> _seriesList = [];
+  bool _isAdded = false;
   String _message = '';
-  String get message => _message;
-
-  bool _isAddedtoWatchlistSeries = false;
-  bool get isAddedToWatchlistSeries => _isAddedtoWatchlistSeries;
 
   SeriesDetailBloc({
     required this.getSeriesDetail,
@@ -36,91 +31,156 @@ class SeriesDetailBloc extends Bloc<SeriesDetailEvent, SeriesDetailState> {
     required this.getWatchListStatusSeries,
     required this.saveWatchlistSeries,
     required this.removeWatchlistSeries,
-  }) : super(SeriesDetailEmpty());
+  }) : super(
+          SeriesDetailEmpty(
+            const SeriesDetail(
+              name: 'name',
+              backdropPath: 'backdropPath',
+              firstAirDate: 'firstAirDate',
+              genres: [Genre(id: 1, name: 'name')],
+              id: 1,
+              originalName: 'originalName',
+              overview: 'overview',
+              popularity: 1.0,
+              posterPath: 'posterPath',
+              voteAverage: 1,
+              voteCount: 1,
+              numberOfEpisodes: 1,
+              numberOfSeasons: 1,
+              seasons: [
+                Season(
+                  airDate: 'airDate',
+                  episodeCount: 1,
+                  id: 1,
+                  name: 'name',
+                  overview: 'overview',
+                  posterPath: 'posterPath',
+                  seasonNumber: 1,
+                )
+              ],
+            ),
+            const [],
+            false,
+            '',
+          ),
+        ) {
+    on<InitiateDetailSeries>(
+      (event, emit) async {
+        emit(SeriesDetailLoading(state.seriesDetail, state.seriesList,
+            state.isAdded, state.message));
+        final id = event.id;
+        final seriesResult = await getSeriesDetail.execute(id);
+        final recommendationsResult =
+            await getSeriesRecommendations.execute(id);
+        _isAdded = await getWatchListStatusSeries.execute(id);
 
-  @override
-  Stream<SeriesDetailState> mapEventToState(SeriesDetailEvent event) async* {
-    if (event is InitiateDetailSeries) {
-      yield SeriesDetailLoading();
-      final id = event.id;
-      final result = await getSeriesDetail.execute(id);
-      final recommendSeriesResult = await getSeriesRecommendations.execute(id);
-
-      yield* result.fold(
-        (failure) async* {
-          yield SeriesDetailError(failure.message);
-        },
-        (data) async* {
-          _serie = data;
-          _isAddedtoWatchlistSeries =
-              await getWatchListStatusSeries.execute(id);
-
-          yield* recommendSeriesResult.fold((recFail) async* {
-            yield SeriesDetailError(recFail.message);
-          }, (recData) async* {
-            _seriesRecommendations = recData;
-            yield SeriesDetailHasData(
-              result: _serie,
-              recommendations: _seriesRecommendations,
-              isWatchlist: _isAddedtoWatchlistSeries,
-              message: _message,
+        seriesResult.fold(
+          (failure) {
+            _message = failure.message;
+            emit(SeriesDetailError(
+              state.seriesDetail,
+              state.seriesList,
+              _isAdded,
+              _message,
+            ));
+          },
+          (data) {
+            _seriesDetail = data;
+            recommendationsResult.fold(
+              (failure) {
+                _message = failure.message;
+                emit(
+                  SeriesDetailHasDataRecFail(
+                    _seriesDetail,
+                    state.seriesList,
+                    _isAdded,
+                    _message,
+                  ),
+                );
+              },
+              (recData) {
+                _seriesList = recData;
+                emit(
+                  SeriesDetailHasDataRecSuccess(
+                    _seriesDetail,
+                    _seriesList,
+                    _isAdded,
+                    state.message,
+                  ),
+                );
+              },
             );
-          });
-        },
-      );
-    }
+          },
+        );
+      },
+    );
 
-    if (event is AddWatchlistSeriesEvent) {
-      yield SeriesDetailLoading();
-      final series = event.seriesDetail;
-      final result = await saveWatchlistSeries.execute(series);
+    on<AddWatchlistSeriesEvent>(
+      (event, emit) async {
+        final series = event.seriesDetail;
+        final result = await saveWatchlistSeries.execute(series);
 
-      _isAddedtoWatchlistSeries =
-          await getWatchListStatusSeries.execute(series.id);
+        _isAdded = await getWatchListStatusSeries.execute(series.id);
 
-      yield* result.fold(
-        (failure) async* {
-          yield SeriesDetailHasData(
-            result: _serie,
-            recommendations: _seriesRecommendations,
-            isWatchlist: _isAddedtoWatchlistSeries,
-            message: failure.message,
-          );
-          _message = failure.message;
-        },
-        (successMessage) async* {
-          yield SeriesDetailHasData(
-            result: _serie,
-            recommendations: _seriesRecommendations,
-            isWatchlist: _isAddedtoWatchlistSeries,
-            message: successMessage,
-          );
-          _message = successMessage;
-        },
-      );
-    }
+        result.fold(
+          (failure) {
+            _message = failure.message;
+            emit(
+              SeriesDetailWatchlistError(
+                state.seriesDetail,
+                state.seriesList,
+                _isAdded,
+                _message,
+              ),
+            );
+          },
+          (successMessage) {
+            _message = successMessage;
+            emit(
+              SeriesDetailAddWatchlist(
+                state.seriesDetail,
+                state.seriesList,
+                _isAdded,
+                _message,
+              ),
+            );
+          },
+        );
+      },
+    );
 
-    if (event is RemoveWatchlistSeriesEvent) {
-      final series = event.seriesDetail;
-      final result = await removeWatchlistSeries.execute(series);
+    on<RemoveWatchlistSeriesEvent>(
+      (event, emit) async {
+        final series = event.seriesDetail;
+        final result = await removeWatchlistSeries.execute(series);
 
-      yield* result.fold(
-        (failure) async* {
-          _message = failure.message;
-        },
-        (successMessage) async* {
-          _message = successMessage;
-        },
-      );
+        _isAdded = await getWatchListStatusSeries.execute(series.id);
 
-      _isAddedtoWatchlistSeries =
-          await getWatchListStatusSeries.execute(series.id);
-      yield SeriesDetailHasData(
-        result: _serie,
-        recommendations: _seriesRecommendations,
-        isWatchlist: _isAddedtoWatchlistSeries,
-        message: _message,
-      );
-    }
+        result.fold(
+          (failure) {
+            _message = failure.message;
+            emit(
+              SeriesDetailWatchlistError(
+                state.seriesDetail,
+                state.seriesList,
+                _isAdded,
+                _message,
+              ),
+            );
+          },
+          (successMessage) {
+            _message = successMessage;
+            emit(
+              SeriesDetailRemoveWatchlist(
+                state.seriesDetail,
+                state.seriesList,
+                _isAdded,
+                _message,
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }

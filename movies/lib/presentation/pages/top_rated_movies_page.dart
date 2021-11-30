@@ -1,9 +1,9 @@
 // ignore_for_file: use_key_in_widget_constructors, constant_identifier_names
 
-import 'package:core/utils/state_enum.dart';
 import 'package:core/widgets/movie_card_list.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/presentation/provider/top_rated_movies_notifier.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies/presentation/bloc/top_rated/top_rated_movies_bloc.dart';
 import 'package:provider/provider.dart';
 
 class TopRatedMoviesPage extends StatefulWidget {
@@ -15,9 +15,11 @@ class _TopRatedMoviesPageState extends State<TopRatedMoviesPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<TopRatedMoviesNotifier>(context, listen: false)
-            .fetchTopRatedMovies());
+    Future.microtask(
+      () => context
+          .read<TopRatedMoviesBloc>()
+          .add(const InitiateTopRatedMoviesEvent()),
+    );
   }
 
   @override
@@ -28,24 +30,24 @@ class _TopRatedMoviesPageState extends State<TopRatedMoviesPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<TopRatedMoviesNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.loading) {
+        child: BlocBuilder<TopRatedMoviesBloc, TopRatedMoviesState>(
+          builder: (context, state) {
+            if (state is TopRatedMoviesLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.loaded) {
+            } else if (state is TopRatedMoviesHasData) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final movie = data.movies[index];
+                  final movie = state.topRatedMovies[index];
                   return MovieCard(movie);
                 },
-                itemCount: data.movies.length,
+                itemCount: state.topRatedMovies.length,
               );
             } else {
               return Center(
                 key: const Key('error_message'),
-                child: Text(data.message),
+                child: Text(state.message),
               );
             }
           },
